@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "Matan Ben-Yosef", email = "mbyosef@lightricks.com" }
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "ltx-core",
     "accelerate>=1.2.1",
@@ -25,10 +25,10 @@ dependencies = [
     "safetensors>=0.5.0",
     "scenedetect>=0.6.5.2",
     "sentencepiece>=0.2.0",
-    "torch>=2.6.0",
-    "torchaudio>=2.7.0",
+    "torch>=2.9.1",
+    "torchaudio>=2.9.1",
     "torchcodec>=0.8.1",
-    "torchvision>=0.21.0",
+    "torchvision>=0.24.0",
     "typer>=0.15.1",
     "wandb>=0.19.11",
     "setuptools>=79.0.0",

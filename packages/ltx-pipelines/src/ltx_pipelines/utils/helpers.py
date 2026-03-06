@@ -1,6 +1,7 @@
 import gc
 import logging
 from dataclasses import replace
+import os
 
 import torch
 from tqdm import tqdm
@@ -34,6 +35,23 @@ from ltx_pipelines.utils.types import (
 
 
 def get_device() -> torch.device:
+    """
+    根据分布式训练环境变量获取设备
+    适用于 torch.distributed.launch / torchrun
+    """
+    # 检查是否在分布式环境中
+    if "LOCAL_RANK" in os.environ:
+        local_rank = int(os.environ["LOCAL_RANK"])
+        # 确保CUDA可用
+        if torch.cuda.is_available():
+            # 设置当前进程使用的GPU
+            torch.cuda.set_device(local_rank)
+            device = torch.device(f"cuda:{local_rank}")
+            return device
+        else:
+            return torch.device("cpu")
+    
+    # 非分布式环境，使用原有的逻辑
     if torch.cuda.is_available():
         return torch.device("cuda")
     return torch.device("cpu")

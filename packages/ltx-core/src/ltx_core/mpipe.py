@@ -42,7 +42,7 @@ class MPipe:
             world_size=self.world_size,
             device_id=torch.device(f'cuda:{self.rank}'),  # 明确指定设备
         )
-    
+
     def sync(self):
         """
         同步所有进程
@@ -82,7 +82,7 @@ class MPipe:
         if self.world_size > 1:
             dist.broadcast(tensor, src=src)
 
-    def paralle_model(self, model: nn.Module, blocks):
+    def paralle_model(self, model: nn.Module, blocks=None, init_model_weights=None):
         """
         Create a PipelineParallel model from the given model.
         Args:
@@ -111,7 +111,9 @@ class MPipe:
         # 创建当前阶段的模型
         stage_model = nn.Sequential(*[blocks[i] for i in range(start_idx, end_idx)])
         print(f"stage_model start={start_idx} end={end_idx} num_blocks={num_blocks}")
-        #stage_model.to_empty(device=device)
+        stage_model.to_empty(device=device) #非常重要 给模型初始化空权重，分配存储空间
+        if init_model_weights is not None:
+            stage_model.apply(init_model_weights)
         stage_model.eval()  # 推理模式 ==stage_model.train(False)      
         
         # 创建PipelineStage
